@@ -21,7 +21,7 @@ app.get('/api/lists', (req, res) => {
 });
 
 // Endpoint to add a new list
-app.post('/api/lists', (req, res) => {
+app.post('/api/lists/add', (req, res) => {
   const { listName } = req.body;
   const decodedListName = decodeURIComponent(listName);
   if (!lists[decodedListName]) {
@@ -33,7 +33,7 @@ app.post('/api/lists', (req, res) => {
 });
 
 // Endpoint to add a new task to a list
-app.post('/api/lists/:listName/tasks', (req, res) => {
+app.post('/api/lists/:listName/add/tasks', (req, res) => {
   const decodedListName = decodeURIComponent(req.params.listName);
   const { task } = req.body;
   if (lists[decodedListName]) {
@@ -45,7 +45,7 @@ app.post('/api/lists/:listName/tasks', (req, res) => {
 });
 
 // Endpoint to toggle task completion
-app.put('/api/lists/:listName/tasks/:taskIndex', (req, res) => {
+app.put('/api/lists/:listName/complete/tasks/:taskIndex', (req, res) => {
   const decodedListName = decodeURIComponent(req.params.listName);
   const { taskIndex } = req.params;
   if (lists[decodedListName] && lists[decodedListName][taskIndex]) {
@@ -57,7 +57,7 @@ app.put('/api/lists/:listName/tasks/:taskIndex', (req, res) => {
 });
 
 // Endpoint to delete a task from a list
-app.delete('/api/lists/:listName/tasks/:taskIndex', (req, res) => {
+app.delete('/api/lists/:listName/delete/tasks/:taskIndex', (req, res) => {
   const decodedListName = decodeURIComponent(req.params.listName);
   const { taskIndex } = req.params;
   if (lists[decodedListName] && lists[decodedListName][taskIndex]) {
@@ -69,7 +69,7 @@ app.delete('/api/lists/:listName/tasks/:taskIndex', (req, res) => {
 });
 
 // Endpoint to delete a list
-app.delete('/api/lists/:listName', (req, res) => {
+app.delete('/api/lists/delete/:listName', (req, res) => {
   const decodedListName = decodeURIComponent(req.params.listName);
   if (lists[decodedListName]) {
     delete lists[decodedListName];

@@ -125,9 +125,6 @@ function App() {
   const deleteList = (listName) => {
     if (lists[listName]) {
       if (window.confirm(`Are you sure you want to delete the list "${listName}"?`)) {
-        fetch(`http://localhost:3001/api/lists/${encodeURIComponent(listName)}`, {
-          method: 'DELETE',
-        })
           .then(response => {
             if (!response.ok) {
               throw new Error('Network response was not ok');

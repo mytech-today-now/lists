@@ -1,70 +1,110 @@
-# Getting Started with Create React App
+# To-Do Lists Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a simple To-Do Lists application built with React for the frontend and Express.js for the backend. The application allows users to create multiple to-do lists, add tasks to these lists, mark tasks as complete, and delete tasks and lists.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- Create multiple to-do lists
+- Add tasks to lists
+- Mark tasks as complete
+- Delete tasks
+- Delete lists
+- State management to keep the UI updated
+- Notifications for user actions
 
-### `npm start`
+## Installation
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/mytech-today-now/MP2.git
+    cd MP2
+    ```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+2. Install the dependencies for both the frontend and backend:
+    ```sh
+    npm install
+    cd client
+    npm install
+    cd ..
+    ```
 
-### `npm test`
+## Running the Application
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Start the backend server:
+    ```sh
+    npm run server
+    ```
 
-### `npm run build`
+2. In a new terminal, start the frontend application:
+    ```sh
+    cd client
+    npm start
+    ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The application should now be running on `http://localhost:3000` with the backend server running on `http://localhost:3001`.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Folder Structure
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+MP2/
+├── client/
+│ ├── public/
+│ ├── src/
+│ │ ├── App.css
+│ │ ├── App.js
+│ │ ├── index.js
+│ │ ├── TodoList.js
+│ │ └── ...
+│ ├── package.json
+│ └── ...
+├── server.js
+├── package.json
+└── ...
 
-### `npm run eject`
+## API Endpoints
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Lists
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- `GET /api/lists`
+  - Get all lists
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- `POST /api/lists`
+  - Create a new list
+  - Body: `{ "listName": "New List Name" }`
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- `PUT /api/lists/:listName/remove`
+  - Remove a list
 
-## Learn More
+### Tasks
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- `POST /api/lists/:listName/tasks`
+  - Add a new task to a list
+  - Body: `{ "task": "New Task" }`
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- `PUT /api/lists/:listName/tasks/:taskIndex`
+  - Toggle task completion
 
-### Code Splitting
+- `DELETE /api/lists/:listName/tasks/:taskIndex`
+  - Delete a task from a list
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Technologies Used
 
-### Analyzing the Bundle Size
+- **Frontend**: React, React Hooks, CSS
+- **Backend**: Node.js, Express.js
+- **Notifications**: react-toastify
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## License
 
-### Making a Progressive Web App
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Acknowledgements
 
-### Advanced Configuration
+- This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- Special thanks to the [React Toastify](https://fkhadra.github.io/react-toastify/) library for providing easy-to-use notifications.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Contributing
 
-### Deployment
+Contributions are welcome! Please open an issue or submit a pull request for any changes or improvements.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+---
 
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**Enjoy using the To-Do Lists Application!**

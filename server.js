@@ -27,7 +27,7 @@ app.post('/api/lists', (req, res) => {
 });
 
 // Endpoint to delete a list
-app.delete('/api/lists/:listName', (req, res) => {
+app.delete('/api/lists/:'${encodeURIComponent(listName)}, (req, res) => {
   const { listName } = req.params;
   if (lists[listName]) {
     delete lists[listName];

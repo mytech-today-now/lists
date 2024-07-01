@@ -43,6 +43,7 @@
 
 .todo-list .task-actions {
   text-align: right;
+  size: 0.8vw;
 }
 
 .todo-list .task-actions a {

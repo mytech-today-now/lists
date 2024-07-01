@@ -38,9 +38,10 @@ function App() {
           }
           return response.json();
         })
-        .then(() => {
+        .then(data => {
           setLists(prevLists => ({ ...prevLists, [newListName]: [] }));
           setNewListName('');
+          toast.success('List added successfully');
         })
         .catch(error => {
           console.error('Fetch error:', error);
@@ -50,7 +51,7 @@ function App() {
   };
 
   const addTask = (listName, task) => {
-    fetch(`http://localhost:3001/api/lists/${listName}/tasks`, {
+    fetch(`http://localhost:3001/api/lists/${encodeURIComponent(listName)}/tasks`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -63,11 +64,9 @@ function App() {
         }
         return response.json();
       })
-      .then(() => {
-        setLists(prevLists => ({
-          ...prevLists,
-          [listName]: [...prevLists[listName], { text: task, completed: false }],
-        }));
+      .then(data => {
+        setLists(prevLists => ({ ...prevLists, [listName]: [...prevLists[listName], { text: task, completed: false }] }));
+        toast.success('Task added successfully');
       })
       .catch(error => {
         console.error('Fetch error:', error);
@@ -76,7 +75,7 @@ function App() {
   };
 
   const toggleComplete = (listName, taskIndex) => {
-    fetch(`http://localhost:3001/api/lists/${listName}/tasks/${taskIndex}`, {
+    fetch(`http://localhost:3001/api/lists/${encodeURIComponent(listName)}/tasks/${taskIndex}`, {
       method: 'PUT',
     })
       .then(response => {
@@ -85,22 +84,23 @@ function App() {
         }
         return response.json();
       })
-      .then(() => {
+      .then(data => {
         setLists(prevLists => ({
           ...prevLists,
           [listName]: prevLists[listName].map((task, index) =>
             index === taskIndex ? { ...task, completed: !task.completed } : task
           ),
         }));
+        toast.success('Task updated successfully');
       })
       .catch(error => {
         console.error('Fetch error:', error);
-        toast.error('Failed to toggle task completion');
+        toast.error('Failed to update task');
       });
   };
 
   const deleteTask = (listName, taskIndex) => {
-    fetch(`http://localhost:3001/api/lists/${listName}/tasks/${taskIndex}`, {
+    fetch(`http://localhost:3001/api/lists/${encodeURIComponent(listName)}/tasks/${taskIndex}`, {
       method: 'DELETE',
     })
       .then(response => {
@@ -109,16 +109,47 @@ function App() {
         }
         return response.json();
       })
-      .then(() => {
+      .then(data => {
         setLists(prevLists => ({
           ...prevLists,
           [listName]: prevLists[listName].filter((_, index) => index !== taskIndex),
         }));
+        toast.success('Task deleted successfully');
       })
       .catch(error => {
         console.error('Fetch error:', error);
         toast.error('Failed to delete task');
       });
+  };
+
+  const deleteList = (listName) => {
+    if (lists[listName]) {
+      if (window.confirm(`Are you sure you want to delete the list "${listName}"?`)) {
+        fetch(`http://localhost:3001/api/lists/${encodeURIComponent(listName)}/remove`, {
+          method: 'PUT',
+        })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then(() => {
+            setLists(prevLists => {
+              const newLists = { ...prevLists };
+              delete newLists[listName];
+              return newLists;
+            });
+            toast.success('List removed successfully');
+          })
+          .catch(error => {
+            console.error('Fetch error:', error);
+            toast.error('Failed to remove list');
+          });
+      }
+    } else {
+      toast.error('List does not exist');
+    }
   };
 
   const handleKeyPress = (e) => {
@@ -142,14 +173,17 @@ function App() {
       <button onClick={addList}>Add List</button>
       <div className="lists-container">
         {Object.keys(lists).map(listName => (
-          <TodoList
-            key={listName}
-            name={listName}
-            tasks={lists[listName]}
-            addTask={addTask}
-            toggleComplete={toggleComplete}
-            deleteTask={deleteTask}
-          />
+          <div key={listName} className="list">
+            <h2>{listName}</h2>
+            <button onClick={() => deleteList(listName)}>Delete List</button>
+            <TodoList
+              name={listName}
+              tasks={lists[listName] || []} // Ensure tasks is an array
+              addTask={addTask}
+              toggleComplete={toggleComplete}
+              deleteTask={deleteTask}
+            />
+          </div>
         ))}
       </div>
       <ToastContainer />

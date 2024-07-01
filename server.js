@@ -23,21 +23,22 @@ app.get('/api/lists', (req, res) => {
 // Endpoint to add a new list
 app.post('/api/lists', (req, res) => {
   const { listName } = req.body;
-  if (!lists[listName]) {
-    lists[listName] = [];
-    res.status(201).json({ message: 'List created successfully' });
+  const decodedListName = decodeURIComponent(listName);
+  if (!lists[decodedListName]) {
+    lists[decodedListName] = [];
+    res.status(201).json({ message: 'List created successfully', list: lists[decodedListName] });
   } else {
-    res.status(400).json({ message: 'List already exists' });
+    res.status(400).json({ message: 'List already exists', list: lists[decodedListName] });
   }
 });
 
 // Endpoint to add a new task to a list
 app.post('/api/lists/:listName/tasks', (req, res) => {
-  const { listName } = req.params;
+  const decodedListName = decodeURIComponent(req.params.listName);
   const { task } = req.body;
-  if (lists[listName]) {
-    lists[listName].push({ text: task, completed: false });
-    res.status(201).json({ message: 'Task added successfully' });
+  if (lists[decodedListName]) {
+    lists[decodedListName].push({ text: task, completed: false });
+    res.status(201).json({ message: 'Task added successfully', list: lists[decodedListName] });
   } else {
     res.status(404).json({ message: 'List not found' });
   }
@@ -45,10 +46,11 @@ app.post('/api/lists/:listName/tasks', (req, res) => {
 
 // Endpoint to toggle task completion
 app.put('/api/lists/:listName/tasks/:taskIndex', (req, res) => {
-  const { listName, taskIndex } = req.params;
-  if (lists[listName] && lists[listName][taskIndex]) {
-    lists[listName][taskIndex].completed = !lists[listName][taskIndex].completed;
-    res.status(200).json({ message: 'Task updated successfully' });
+  const decodedListName = decodeURIComponent(req.params.listName);
+  const { taskIndex } = req.params;
+  if (lists[decodedListName] && lists[decodedListName][taskIndex]) {
+    lists[decodedListName][taskIndex].completed = !lists[decodedListName][taskIndex].completed;
+    res.status(200).json({ message: 'Task updated successfully', list: lists[decodedListName] });
   } else {
     res.status(404).json({ message: 'Task not found' });
   }
@@ -56,12 +58,24 @@ app.put('/api/lists/:listName/tasks/:taskIndex', (req, res) => {
 
 // Endpoint to delete a task from a list
 app.delete('/api/lists/:listName/tasks/:taskIndex', (req, res) => {
-  const { listName, taskIndex } = req.params;
-  if (lists[listName] && lists[listName][taskIndex]) {
-    lists[listName].splice(taskIndex, 1);
-    res.status(200).json({ message: 'Task deleted successfully' });
+  const decodedListName = decodeURIComponent(req.params.listName);
+  const { taskIndex } = req.params;
+  if (lists[decodedListName] && lists[decodedListName][taskIndex]) {
+    lists[decodedListName].splice(taskIndex, 1);
+    res.status(200).json({ message: 'Task deleted successfully', list: lists[decodedListName] });
   } else {
     res.status(404).json({ message: 'Task not found' });
+  }
+});
+
+// Endpoint to remove a list using PUT
+app.put('/api/lists/:listName/remove', (req, res) => {
+  const decodedListName = decodeURIComponent(req.params.listName);
+  if (lists[decodedListName]) {
+    delete lists[decodedListName];
+    res.status(200).json({ message: 'List removed successfully' });
+  } else {
+    res.status(404).json({ message: 'List not found' });
   }
 });
 

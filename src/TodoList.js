@@ -1,50 +1,34 @@
 import React, { useState } from 'react';
-import { toast } from 'react-toastify';
 
-function TodoList({ name, tasks, addTask, toggleComplete, deleteTask }) {
-  const [newTaskName, setNewTaskName] = useState('');
+function TodoList({ name, tasks = [], addTask, toggleComplete, deleteTask }) {
+  const [newTask, setNewTask] = useState('');
 
   const handleAddTask = () => {
-    if (newTaskName.trim() !== '') {
-      addTask(name, newTaskName);
-      setNewTaskName('');
-    }
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      if (newTaskName.trim() !== '') {
-        handleAddTask();
-      } else {
-        toast.warn('Please enter a task to add.');
-      }
+    if (newTask.trim() !== '') {
+      addTask(name, newTask);
+      setNewTask('');
     }
   };
 
   return (
-    <div className="TodoList">
-      <h2>{name}</h2>
-      <input
-        type="text"
-        value={newTaskName}
-        onChange={(e) => setNewTaskName(e.target.value)}
-        onKeyPress={handleKeyPress}
-        placeholder="Add a new task"
-      />
-      <button onClick={handleAddTask}>Add Task</button>
+    <div>
+      <h3>{name}</h3>
       <ul>
         {tasks.map((task, index) => (
-          <li key={index} className={task.completed ? 'completed' : ''}>
-            {task.text}
-            <a href="#!" onClick={() => toggleComplete(name, index)} style={{ marginLeft: '10px' }}>
-              {task.completed ? 'Undo' : 'Complete'}
-            </a>
-            <a href="#!" onClick={() => deleteTask(name, index)} style={{ marginLeft: '10px' }}>
-              Delete
-            </a>
+          <li key={index}>
+            <span style={{ textDecoration: task.completed ? 'line-through' : 'none' }}>{task.text}</span>
+            <a href="#" onClick={() => toggleComplete(name, index)}>Complete</a>
+            <a href="#" onClick={() => deleteTask(name, index)}>Delete</a>
           </li>
         ))}
       </ul>
+      <input
+        type="text"
+        value={newTask}
+        onChange={(e) => setNewTask(e.target.value)}
+        placeholder="Add a new task"
+      />
+      <button onClick={handleAddTask} style={{ backgroundColor: '#93E9BE', color: '#fff' }}>Add Task</button>
     </div>
   );
 }

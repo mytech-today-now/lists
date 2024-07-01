@@ -65,7 +65,10 @@ function App() {
         return response.json();
       })
       .then(data => {
-        setLists(prevLists => ({ ...prevLists, [listName]: [...prevLists[listName], { text: task, completed: false }] }));
+        setLists(prevLists => ({
+          ...prevLists,
+          [listName]: [...prevLists[listName], { text: task, completed: false }]
+        }));
         toast.success('Task added successfully');
       })
       .catch(error => {
@@ -85,12 +88,11 @@ function App() {
         return response.json();
       })
       .then(data => {
-        setLists(prevLists => ({
-          ...prevLists,
-          [listName]: prevLists[listName].map((task, index) =>
-            index === taskIndex ? { ...task, completed: !task.completed } : task
-          ),
-        }));
+        setLists(prevLists => {
+          const newTasks = [...prevLists[listName]];
+          newTasks[taskIndex].completed = !newTasks[taskIndex].completed;
+          return { ...prevLists, [listName]: newTasks };
+        });
         toast.success('Task updated successfully');
       })
       .catch(error => {
@@ -109,11 +111,12 @@ function App() {
         }
         return response.json();
       })
-      .then(data => {
-        setLists(prevLists => ({
-          ...prevLists,
-          [listName]: prevLists[listName].filter((_, index) => index !== taskIndex),
-        }));
+      .then(() => {
+        setLists(prevLists => {
+          const newTasks = [...prevLists[listName]];
+          newTasks.splice(taskIndex, 1);
+          return { ...prevLists, [listName]: newTasks };
+        });
         toast.success('Task deleted successfully');
       })
       .catch(error => {
@@ -125,6 +128,9 @@ function App() {
   const deleteList = (listName) => {
     if (lists[listName]) {
       if (window.confirm(`Are you sure you want to delete the list "${listName}"?`)) {
+        fetch(`http://localhost:3001/api/lists/${encodeURIComponent(listName)}`, {
+          method: 'DELETE',
+        })
           .then(response => {
             if (!response.ok) {
               throw new Error('Network response was not ok');

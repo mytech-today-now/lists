@@ -44,6 +44,8 @@ This is a simple To-Do Lists application built with React for the frontend and E
 The application should now be running on `http://localhost:3000` with the backend server running on `http://localhost:3001`.
 
 ## Folder Structure
+
+
 ```
 lists/
 ├── client/
@@ -61,6 +63,7 @@ lists/
 └── ...
 ```
 
+
 ## API Endpoints
 
 ### Lists
@@ -72,8 +75,8 @@ lists/
   - Create a new list
   - Body: `{ "listName": "New List Name" }`
 
-- `PUT /api/lists/:listName/remove`
-  - Remove a list
+- `DELETE /api/lists/:listName`
+  - Delete a list
 
 ### Tasks
 

@@ -68,12 +68,12 @@ app.delete('/api/lists/:listName/tasks/:taskIndex', (req, res) => {
   }
 });
 
-// Endpoint to remove a list using PUT
-app.put('/api/lists/:listName/remove', (req, res) => {
+// Endpoint to delete a list
+app.delete('/api/lists/:listName', (req, res) => {
   const decodedListName = decodeURIComponent(req.params.listName);
   if (lists[decodedListName]) {
     delete lists[decodedListName];
-    res.status(200).json({ message: 'List removed successfully' });
+    res.status(200).json({ message: 'List deleted successfully' });
   } else {
     res.status(404).json({ message: 'List not found' });
   }

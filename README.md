@@ -44,8 +44,8 @@ This is a simple To-Do Lists application built with React for the frontend and E
 The application should now be running on `http://localhost:3000` with the backend server running on `http://localhost:3001`.
 
 ## Folder Structure
-
-MP2/
+```
+lists/
 ├── client/
 │ ├── public/
 │ ├── src/
@@ -59,6 +59,7 @@ MP2/
 ├── server.js
 ├── package.json
 └── ...
+```
 
 ## API Endpoints
 

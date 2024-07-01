@@ -1,85 +1,57 @@
+/* App.css */
+
 .App {
   text-align: center;
 }
 
-input {
-  padding: 10px;
+.App input,
+.App button {
   margin: 10px;
-  width: 200px;
-}
-
-button {
-  padding: 10px 20px;
-  margin: 10px;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  padding: 10px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-button {
-  margin-left: 10px;
-}
-
-.completed {
-  text-decoration: line-through;
-  color: gray;
 }
 
 .lists-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
-  padding: 20px;
+  justify-content: center;
 }
 
 .list {
   border: 1px solid #ddd;
   border-radius: 5px;
+  margin: 10px;
   padding: 10px;
-  background-color: #f9f9f9;
-  min-width: 300px;
+  width: 300px;
 }
 
-.list h2 {
+.todo-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.todo-list .task-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #ddd;
 }
 
-.list button {
-  background-color: red;
-  color: white;
-  border: none;
-  padding: 5px 10px;
+.todo-list .task-text {
+  flex-grow: 1;
+  text-align: left;
+}
+
+.todo-list .task-actions {
+  text-align: right;
+}
+
+.todo-list .task-actions a {
+  margin-left: 10px;
   cursor: pointer;
-  border-radius: 3px;
+  color: blue;
+  text-decoration: none;
 }
 
-.list button:hover {
-  background-color: darkred;
-}
-
-input[type="text"] {
-  margin-bottom: 10px;
-}
-
-button[style] {
-  background-color: #93E9BE;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 3px;
-}
-
-button[style]:hover {
-  background-color: #81d7a8;
+.todo-list .task-actions a:hover {
+  text-decoration: underline;
 }

@@ -25,10 +25,10 @@ function TodoList({ name, tasks, addTask, toggleComplete, deleteTask }) {
           <li key={index} className="task-item">
             <span className="task-text">{task.text}</span>
             <div className="task-actions">
-              <button onClick={() => toggleComplete(name, index)}>
+              <a href="#" onClick={() => toggleComplete(name, index)}>
                 {task.completed ? 'Undo' : 'Complete'}
-              </button>
-              <button onClick={() => deleteTask(name, index)}>Delete</button>
+              </a>
+              <a href="#" onClick={() => deleteTask(name, index)}>Delete</a>
             </div>
           </li>
         ))}

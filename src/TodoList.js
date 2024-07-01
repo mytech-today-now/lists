@@ -22,7 +22,7 @@ function TodoList({ name, tasks, addTask, toggleComplete, deleteTask }) {
       />
       <ul>
         {tasks.map((task, index) => (
-          <li key={index} className="task-item">
+          <li key={index} className={`task-item ${task.completed ? 'completed' : ''}`}>
             <span className="task-text">{task.text}</span>
             <div className="task-actions">
               <a href="#" onClick={() => toggleComplete(name, index)}>

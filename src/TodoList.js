@@ -1,34 +1,38 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-function TodoList({ name, tasks = [], addTask, toggleComplete, deleteTask }) {
-  const [newTask, setNewTask] = useState('');
+function TodoList({ name, tasks, addTask, toggleComplete, deleteTask }) {
+  const [newTask, setNewTask] = React.useState('');
 
-  const handleAddTask = () => {
-    if (newTask.trim() !== '') {
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && newTask.trim() !== '') {
       addTask(name, newTask);
       setNewTask('');
     }
   };
 
   return (
-    <div>
+    <div className="todo-list">
       <h3>{name}</h3>
-      <ul>
-        {tasks.map((task, index) => (
-          <li key={index}>
-            <span style={{ textDecoration: task.completed ? 'line-through' : 'none' }}>{task.text}</span>
-            <a href="#" onClick={() => toggleComplete(name, index)}>Complete</a>
-            <a href="#" onClick={() => deleteTask(name, index)}>Delete</a>
-          </li>
-        ))}
-      </ul>
       <input
         type="text"
         value={newTask}
         onChange={(e) => setNewTask(e.target.value)}
+        onKeyPress={handleKeyPress}
         placeholder="Add a new task"
       />
-      <button onClick={handleAddTask} style={{ backgroundColor: '#93E9BE', color: '#fff' }}>Add Task</button>
+      <ul>
+        {tasks.map((task, index) => (
+          <li key={index} className="task-item">
+            <span className="task-text">{task.text}</span>
+            <div className="task-actions">
+              <button onClick={() => toggleComplete(name, index)}>
+                {task.completed ? 'Undo' : 'Complete'}
+              </button>
+              <button onClick={() => deleteTask(name, index)}>Delete</button>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

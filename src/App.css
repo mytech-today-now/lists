@@ -43,6 +43,7 @@
 
 .todo-list .task-actions {
   text-align: right;
+  font-size: 0.8vw;
 }
 
 .todo-list .task-actions a {
@@ -64,4 +65,12 @@
 
 .todo-list .task-item.completed .task-actions a {
   color: lightgray;
+}
+
+.todo-list .task-item:not(.completed) .task-text {
+  color: black; /* Ensure normal color for non-completed tasks */
+}
+
+.todo-list .task-item:not(.completed) .task-actions a {
+  color: blue; /* Ensure normal color for action links of non-completed tasks */
 }

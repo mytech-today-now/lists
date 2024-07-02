@@ -65,10 +65,7 @@ function App() {
         return response.json();
       })
       .then(data => {
-        setLists(prevLists => ({
-          ...prevLists,
-          [listName]: [...prevLists[listName], { text: task, completed: false }]
-        }));
+        setLists(prevLists => ({ ...prevLists, [listName]: [...prevLists[listName], { text: task, completed: false }] }));
         toast.success('Task added successfully');
       })
       .catch(error => {
@@ -88,11 +85,12 @@ function App() {
         return response.json();
       })
       .then(data => {
-        setLists(prevLists => {
-          const newTasks = [...prevLists[listName]];
-          newTasks[taskIndex].completed = !newTasks[taskIndex].completed;
-          return { ...prevLists, [listName]: newTasks };
-        });
+        setLists(prevLists => ({
+          ...prevLists,
+          [listName]: prevLists[listName].map((task, index) =>
+            index === taskIndex ? { ...task, completed: !task.completed } : task
+          ),
+        }));
         toast.success('Task updated successfully');
       })
       .catch(error => {
@@ -111,12 +109,11 @@ function App() {
         }
         return response.json();
       })
-      .then(() => {
-        setLists(prevLists => {
-          const newTasks = [...prevLists[listName]];
-          newTasks.splice(taskIndex, 1);
-          return { ...prevLists, [listName]: newTasks };
-        });
+      .then(data => {
+        setLists(prevLists => ({
+          ...prevLists,
+          [listName]: prevLists[listName].filter((_, index) => index !== taskIndex),
+        }));
         toast.success('Task deleted successfully');
       })
       .catch(error => {

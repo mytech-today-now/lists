@@ -26,23 +26,15 @@ app.post('/api/lists', (req, res) => {
   }
 });
 
-// Endpoint to delete a list
-app.delete('/api/lists/:'${encodeURIComponent(listName)}, (req, res) => {
-  const { listName } = req.params;
-  if (lists[listName]) {
-    delete lists[listName];
-    res.status(200).json({ message: 'List deleted successfully' });
-  } else {
-    res.status(404).json({ message: 'List not found' });
-  }
-});
-
 // Endpoint to add a new task to a list
 app.post('/api/lists/:listName/tasks', (req, res) => {
   const { listName } = req.params;
   const { task } = req.body;
-  if (lists[listName]) {
-    lists[listName].push({ text: task, completed: false });
+  const decodedListName = decodeURIComponent(listName);
+  console.log(`Decoded List Name: ${decodedListName}`);
+  
+  if (lists[decodedListName]) {
+    lists[decodedListName].push({ text: task, completed: false });
     res.status(201).json({ message: 'Task added successfully' });
   } else {
     res.status(404).json({ message: 'List not found' });
@@ -52,8 +44,9 @@ app.post('/api/lists/:listName/tasks', (req, res) => {
 // Endpoint to toggle task completion
 app.put('/api/lists/:listName/tasks/:taskIndex', (req, res) => {
   const { listName, taskIndex } = req.params;
-  if (lists[listName] && lists[listName][taskIndex]) {
-    lists[listName][taskIndex].completed = !lists[listName][taskIndex].completed;
+  const decodedListName = decodeURIComponent(listName);
+  if (lists[decodedListName] && lists[decodedListName][taskIndex]) {
+    lists[decodedListName][taskIndex].completed = !lists[decodedListName][taskIndex].completed;
     res.status(200).json({ message: 'Task updated successfully' });
   } else {
     res.status(404).json({ message: 'Task not found' });
@@ -63,11 +56,24 @@ app.put('/api/lists/:listName/tasks/:taskIndex', (req, res) => {
 // Endpoint to delete a task from a list
 app.delete('/api/lists/:listName/tasks/:taskIndex', (req, res) => {
   const { listName, taskIndex } = req.params;
-  if (lists[listName] && lists[listName][taskIndex]) {
-    lists[listName].splice(taskIndex, 1);
+  const decodedListName = decodeURIComponent(listName);
+  if (lists[decodedListName] && lists[decodedListName][taskIndex]) {
+    lists[decodedListName].splice(taskIndex, 1);
     res.status(200).json({ message: 'Task deleted successfully' });
   } else {
     res.status(404).json({ message: 'Task not found' });
+  }
+});
+
+// Endpoint to delete a list
+app.delete('/api/lists/:listName', (req, res) => {
+  const { listName } = req.params;
+  const decodedListName = decodeURIComponent(listName);
+  if (lists[decodedListName]) {
+    delete lists[decodedListName];
+    res.status(200).json({ message: 'List deleted successfully' });
+  } else {
+    res.status(404).json({ message: 'List not found' });
   }
 });
 

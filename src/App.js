@@ -51,7 +51,10 @@ function App() {
   };
 
   const addTask = (listName, task) => {
-    fetch(`http://localhost:3001/api/lists/${encodeURIComponent(listName)}/tasks`, {
+    const encodedListName = encodeURIComponent(listName);
+    console.log(`Encoded URL: http://localhost:3001/api/lists/${encodedListName}/tasks`);
+
+    fetch(`http://localhost:3001/api/lists/${encodedListName}/tasks`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -65,7 +68,11 @@ function App() {
         return response.json();
       })
       .then(data => {
-        setLists(prevLists => ({ ...prevLists, [listName]: [...prevLists[listName], { text: task, completed: false }] }));
+        setLists(prevLists => {
+          const newLists = { ...prevLists };
+          newLists[listName].push({ text: task, completed: false });
+          return newLists;
+        });
         toast.success('Task added successfully');
       })
       .catch(error => {
@@ -75,8 +82,12 @@ function App() {
   };
 
   const toggleComplete = (listName, taskIndex) => {
-    fetch(`http://localhost:3001/api/lists/${encodeURIComponent(listName)}/tasks/${taskIndex}`, {
+    const encodedListName = encodeURIComponent(listName);
+    fetch(`http://localhost:3001/api/lists/${encodedListName}/tasks/${taskIndex}`, {
       method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     })
       .then(response => {
         if (!response.ok) {
@@ -85,12 +96,11 @@ function App() {
         return response.json();
       })
       .then(data => {
-        setLists(prevLists => ({
-          ...prevLists,
-          [listName]: prevLists[listName].map((task, index) =>
-            index === taskIndex ? { ...task, completed: !task.completed } : task
-          ),
-        }));
+        setLists(prevLists => {
+          const newLists = { ...prevLists };
+          newLists[listName][taskIndex].completed = !newLists[listName][taskIndex].completed;
+          return newLists;
+        });
         toast.success('Task updated successfully');
       })
       .catch(error => {
@@ -100,7 +110,8 @@ function App() {
   };
 
   const deleteTask = (listName, taskIndex) => {
-    fetch(`http://localhost:3001/api/lists/${encodeURIComponent(listName)}/tasks/${taskIndex}`, {
+    const encodedListName = encodeURIComponent(listName);
+    fetch(`http://localhost:3001/api/lists/${encodedListName}/tasks/${taskIndex}`, {
       method: 'DELETE',
     })
       .then(response => {
@@ -110,10 +121,11 @@ function App() {
         return response.json();
       })
       .then(data => {
-        setLists(prevLists => ({
-          ...prevLists,
-          [listName]: prevLists[listName].filter((_, index) => index !== taskIndex),
-        }));
+        setLists(prevLists => {
+          const newLists = { ...prevLists };
+          newLists[listName].splice(taskIndex, 1);
+          return newLists;
+        });
         toast.success('Task deleted successfully');
       })
       .catch(error => {
@@ -125,7 +137,8 @@ function App() {
   const deleteList = (listName) => {
     if (lists[listName]) {
       if (window.confirm(`Are you sure you want to delete the list "${listName}"?`)) {
-        fetch(`http://localhost:3001/api/lists/${encodeURIComponent(listName)}`, {
+        const encodedListName = encodeURIComponent(listName);
+        fetch(`http://localhost:3001/api/lists/${encodedListName}`, {
           method: 'DELETE',
         })
           .then(response => {

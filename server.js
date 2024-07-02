@@ -69,7 +69,7 @@ app.delete('/api/lists/:listName/tasks/:taskIndex', (req, res) => {
 app.delete('/api/lists/:listName', (req, res) => {
   const { listName } = req.params;
   const decodedListName = decodeURIComponent(listName);
-  if (lists[decodedListName]) {
+  if (lists.hasOwnProperty(decodedListName)) {
     delete lists[decodedListName];
     res.status(200).json({ message: 'List deleted successfully' });
   } else {

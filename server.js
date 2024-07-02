@@ -15,6 +15,19 @@ app.get('/api/lists', (req, res) => {
   res.json(lists);
 });
 
+// Endpoint to get a specific list and its tasks
+app.get('/api/lists/:listName', (req, res) => {
+  const { listName } = req.params;
+  const decodedListName = decodeURIComponent(listName);
+  console.log(`Decoded List Name: ${decodedListName}`);
+
+  if (lists.hasOwnProperty(decodedListName)) {
+    res.json(lists[decodedListName]);
+  } else {
+    res.status(404).json({ message: 'List not found' });
+  }
+});
+
 // Endpoint to add a new list
 app.post('/api/lists', (req, res) => {
   const { listName } = req.body;

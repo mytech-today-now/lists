@@ -8,7 +8,9 @@ const port = 3001;
 app.use(bodyParser.json());
 app.use(cors());
 
-let lists = {};
+let lists = {
+  'today': [{ text: 'Task 1', completed: false }, { text: 'Task 2', completed: false }]
+};
 
 // Endpoint to get all lists
 app.get('/api/lists', (req, res) => {

@@ -38,7 +38,7 @@ function App() {
           }
           return response.json();
         })
-        .then(data => {
+        .then(() => {
           setLists(prevLists => ({ ...prevLists, [newListName]: [] }));
           setNewListName('');
           toast.success('List added successfully');
@@ -52,8 +52,6 @@ function App() {
 
   const addTask = (listName, task) => {
     const encodedListName = encodeURIComponent(listName);
-    console.log(`Encoded URL: http://localhost:3001/api/lists/${encodedListName}/tasks`);
-
     fetch(`http://localhost:3001/api/lists/${encodedListName}/tasks`, {
       method: 'POST',
       headers: {
@@ -67,45 +65,16 @@ function App() {
         }
         return response.json();
       })
-      .then(data => {
+      .then(() => {
         setLists(prevLists => {
-          const newLists = { ...prevLists };
-          newLists[listName].push({ text: task, completed: false });
-          return newLists;
+          const newTasks = [...prevLists[listName], { text: task, completed: false }];
+          return { ...prevLists, [listName]: newTasks };
         });
         toast.success('Task added successfully');
       })
       .catch(error => {
         console.error('Fetch error:', error);
         toast.error('Failed to add task');
-      });
-  };
-
-  const toggleComplete = (listName, taskIndex) => {
-    const encodedListName = encodeURIComponent(listName);
-    fetch(`http://localhost:3001/api/lists/${encodedListName}/tasks/${taskIndex}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
-        setLists(prevLists => {
-          const newLists = { ...prevLists };
-          newLists[listName][taskIndex].completed = !newLists[listName][taskIndex].completed;
-          return newLists;
-        });
-        toast.success('Task updated successfully');
-      })
-      .catch(error => {
-        console.error('Fetch error:', error);
-        toast.error('Failed to update task');
       });
   };
 
@@ -120,17 +89,17 @@ function App() {
         }
         return response.json();
       })
-      .then(data => {
+      .then(() => {
         setLists(prevLists => {
           const newLists = { ...prevLists };
           newLists[listName].splice(taskIndex, 1);
           return newLists;
         });
-        toast.success('Task deleted successfully');
+        toast.success('Task removed successfully');
       })
       .catch(error => {
         console.error('Fetch error:', error);
-        toast.error('Failed to delete task');
+        toast.error('Failed to remove task');
       });
   };
 
@@ -165,14 +134,6 @@ function App() {
     }
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      if (newListName.trim() !== '') {
-        addList();
-      }
-    }
-  };
-
   return (
     <div className="App">
       <h1>To-Do Lists</h1>
@@ -180,7 +141,11 @@ function App() {
         type="text"
         value={newListName}
         onChange={(e) => setNewListName(e.target.value)}
-        onKeyPress={handleKeyPress}
+        onKeyPress={(e) => {
+          if (e.key === 'Enter' && newListName.trim() !== '') {
+            addList();
+          }
+        }}
         placeholder="Add a new list"
       />
       <button onClick={addList}>Add List</button>

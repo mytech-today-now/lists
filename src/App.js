@@ -1,8 +1,11 @@
+// src/App.js
+
 import React, { useState, useEffect } from 'react';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
 import './App.css';
 import TodoList from './TodoList';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import SearchComponent from './SearchComponent'; // Import the SearchComponent
 
 function App() {
   const [lists, setLists] = useState({});
@@ -65,12 +68,11 @@ function App() {
         }
         return response.json();
       })
-      .then(() => {
-        setLists(prevLists => {
-          const newTasks = [...prevLists[listName], { text: task, completed: false }];
-          return { ...prevLists, [listName]: newTasks };
-        });
-        toast.success('Task added successfully');
+      .then(updatedList => {
+        setLists(prevLists => ({
+          ...prevLists,
+          [listName]: updatedList.tasks,
+        }));
       })
       .catch(error => {
         console.error('Fetch error:', error);
@@ -80,8 +82,8 @@ function App() {
 
   const toggleComplete = (listName, taskIndex) => {
     const encodedListName = encodeURIComponent(listName);
-    fetch(`http://localhost:3001/api/lists/${encodedListName}/tasks/${taskIndex}`, {
-      method: 'PUT',
+    fetch(`http://localhost:3001/api/lists/${encodedListName}/tasks/${taskIndex}/toggle`, {
+      method: 'PATCH',
     })
       .then(response => {
         if (!response.ok) {
@@ -89,17 +91,15 @@ function App() {
         }
         return response.json();
       })
-      .then(() => {
-        setLists(prevLists => {
-          const newTasks = [...prevLists[listName]];
-          newTasks[taskIndex].completed = !newTasks[taskIndex].completed;
-          return { ...prevLists, [listName]: newTasks };
-        });
-        toast.success('Task updated successfully');
+      .then(updatedList => {
+        setLists(prevLists => ({
+          ...prevLists,
+          [listName]: updatedList.tasks,
+        }));
       })
       .catch(error => {
         console.error('Fetch error:', error);
-        toast.error('Failed to update task');
+        toast.error('Failed to toggle task');
       });
   };
 
@@ -114,17 +114,15 @@ function App() {
         }
         return response.json();
       })
-      .then(() => {
-        setLists(prevLists => {
-          const newLists = { ...prevLists };
-          newLists[listName].splice(taskIndex, 1);
-          return newLists;
-        });
-        toast.success('Task removed successfully');
+      .then(updatedList => {
+        setLists(prevLists => ({
+          ...prevLists,
+          [listName]: updatedList.tasks,
+        }));
       })
       .catch(error => {
         console.error('Fetch error:', error);
-        toast.error('Failed to remove task');
+        toast.error('Failed to delete task');
       });
   };
 
@@ -174,6 +172,13 @@ function App() {
         placeholder="Add a new list"
       />
       <button onClick={addList}>Add List</button>
+
+      {/* Integrate SearchComponent */}
+      <SearchComponent lists={Object.keys(lists).map(listName => ({
+        title: listName,
+        items: lists[listName]
+      }))} />
+
       <div className="lists-container">
         {Object.keys(lists).map(listName => (
           <div key={listName} className="list">

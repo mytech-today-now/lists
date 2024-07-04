@@ -1,5 +1,3 @@
-// src/App.js
-
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import TodoList from './components/TodoList';
@@ -19,7 +17,10 @@ function App() {
         }
         return response.json();
       })
-      .then(data => setLists(data))
+      .then(data => {
+        console.log('Fetched data:', data); // Debugging log
+        setLists(data)
+      })
       .catch(error => {
         console.error('Fetch error:', error);
         toast.error('Failed to fetch lists');
@@ -68,11 +69,12 @@ function App() {
         }
         return response.json();
       })
-      .then(updatedList => {
-        setLists(prevLists => ({
-          ...prevLists,
-          [listName]: updatedList.tasks,
-        }));
+      .then(() => {
+        setLists(prevLists => {
+          const updatedTasks = [...(prevLists[listName] || []), { text: task, completed: false }];
+          return { ...prevLists, [listName]: updatedTasks };
+        });
+        toast.success('Task added successfully');
       })
       .catch(error => {
         console.error('Fetch error:', error);
@@ -81,54 +83,23 @@ function App() {
   };
 
   const toggleComplete = (listName, taskIndex) => {
-    const encodedListName = encodeURIComponent(listName);
-    fetch(`http://localhost:3001/api/lists/${encodedListName}/tasks/${taskIndex}/toggle`, {
-      method: 'PATCH',
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(updatedList => {
-        setLists(prevLists => ({
-          ...prevLists,
-          [listName]: updatedList.tasks,
-        }));
-      })
-      .catch(error => {
-        console.error('Fetch error:', error);
-        toast.error('Failed to toggle task');
-      });
+    const updatedTasks = lists[listName].map((task, index) => {
+      if (index === taskIndex) {
+        return { ...task, completed: !task.completed };
+      }
+      return task;
+    });
+    setLists(prevLists => ({ ...prevLists, [listName]: updatedTasks }));
   };
 
   const deleteTask = (listName, taskIndex) => {
-    const encodedListName = encodeURIComponent(listName);
-    fetch(`http://localhost:3001/api/lists/${encodedListName}/tasks/${taskIndex}`, {
-      method: 'DELETE',
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(updatedList => {
-        setLists(prevLists => ({
-          ...prevLists,
-          [listName]: updatedList.tasks,
-        }));
-      })
-      .catch(error => {
-        console.error('Fetch error:', error);
-        toast.error('Failed to delete task');
-      });
+    const updatedTasks = lists[listName].filter((_, index) => index !== taskIndex);
+    setLists(prevLists => ({ ...prevLists, [listName]: updatedTasks }));
   };
 
   const deleteList = (listName) => {
-    if (lists[listName]) {
-      if (window.confirm(`Are you sure you want to delete the list "${listName}"?`)) {
+    if (listName in lists) {
+      if (window.confirm(`Are you sure you want to delete the list: ${listName}?`)) {
         const encodedListName = encodeURIComponent(listName);
         fetch(`http://localhost:3001/api/lists/${encodedListName}`, {
           method: 'DELETE',
@@ -186,7 +157,7 @@ function App() {
             <button onClick={() => deleteList(listName)}>Delete List</button>
             <TodoList
               name={listName}
-              tasks={lists[listName] || []} // Ensure tasks is an array
+              tasks={Array.isArray(lists[listName]) ? lists[listName] : []} // Ensure tasks is an array
               addTask={addTask}
               toggleComplete={toggleComplete}
               deleteTask={deleteTask}

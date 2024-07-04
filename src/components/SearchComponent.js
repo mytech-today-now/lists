@@ -1,5 +1,3 @@
-// src/SearchComponent.js
-
 import React, { useState, useEffect } from 'react';
 
 const SearchComponent = ({ lists }) => {
@@ -24,10 +22,26 @@ const SearchComponent = ({ lists }) => {
 
   const getHighlightedText = (text, highlight) => {
     const parts = typeof text === 'string' ? text.split(new RegExp(`(${highlight})`, 'gi')) : [text];
-    return <span> {parts.map((part, i) => 
-      <span key={i} style={part.toLowerCase() === highlight.toLowerCase() ? { backgroundColor: 'yellow' } : {}}>
-          {part}
-      </span>)} </span>;
+    return (
+      <span> 
+        {parts.map((part, i) => {
+          // Check if part is a string before calling toLowerCase
+          if (typeof part === 'string') {
+            return (
+              <span key={i} style={part.toLowerCase() === highlight.toLowerCase() ? { backgroundColor: 'yellow' } : {}}>
+                {part}
+              </span>
+            );
+          } else {
+            return (
+              <span key={i}>
+                {part}
+              </span>
+            );
+          }
+        })} 
+      </span>
+    );
   };
 
   return (

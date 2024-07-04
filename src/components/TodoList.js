@@ -22,15 +22,17 @@ function TodoList({ name, tasks, addTask, toggleComplete, deleteTask }) {
       />
       <ul>
         {tasks.map((task, index) => (
-          <li key={index} className={`task-item ${task.completed ? 'completed' : ''}`}>
-            <span className="task-text">{task.text}</span>
-            <div className="task-actions">
-              <a href="#" onClick={() => toggleComplete(name, index)}>
-                {task.completed ? 'Undo' : 'Complete'}
-              </a>
-              <a href="#" onClick={() => deleteTask(name, index)}>Delete</a>
-            </div>
-          </li>
+          typeof task === 'object' && task !== null && 'text' in task && 'completed' in task ? (
+            <li key={index} className={`task-item ${task.completed ? 'completed' : ''}`}>
+              <span className="task-text">{task.text}</span>
+              <div className="task-actions">
+                <a href="#" onClick={() => toggleComplete(name, index)}>
+                  {task.completed ? 'Undo' : 'Complete'}
+                </a>
+                <a href="#" onClick={() => deleteTask(name, index)}>Delete</a>
+              </div>
+            </li>
+          ) : null
         ))}
       </ul>
     </div>

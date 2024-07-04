@@ -1,63 +1,55 @@
-import React, { useState } from 'react';
+// src/SearchComponent.js
 
-// Function to highlight the matched text
-const highlightText = (text, search) => {
-  const parts = text.split(new RegExp(`(${search})`, 'gi'));
-  return (
-    <span>
-      {parts.map((part, index) =>
-        part.toLowerCase() === search.toLowerCase() ? (
-          <span key={index} style={{ backgroundColor: 'yellow' }}>{part}</span>
-        ) : (
-          part
-        )
-      )}
-    </span>
-  );
-};
+import React, { useState, useEffect } from 'react';
 
-const SearchComponent = ({ data }) => {
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
+const SearchComponent = ({ lists }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [results, setResults] = useState(lists);
 
-  // Search function
-  const search = (e) => {
-    const searchTerm = e.target.value;
-    setQuery(searchTerm);
+  useEffect(() => {
+    setResults(lists);
+  }, [lists]);
 
-    if (!searchTerm) {
-      setResults([]);
-      return;
-    }
+  const handleSearch = (event) => {
+    const value = event.target.value;
+    setSearchTerm(value);
+    const filteredResults = lists.map(list => ({
+      ...list,
+      items: list.items ? list.items.filter(item => 
+        typeof item === 'string' && item.toLowerCase().includes(value.toLowerCase())
+      ) : []
+    }));
+    setResults(filteredResults);
+  };
 
-    const filteredData = data.filter(item =>
-      Object.values(item).some(val =>
-        val.toString().toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-    
-    setResults(filteredData);
+  const getHighlightedText = (text, highlight) => {
+    const parts = typeof text === 'string' ? text.split(new RegExp(`(${highlight})`, 'gi')) : [text];
+    return <span> {parts.map((part, i) => 
+      <span key={i} style={part.toLowerCase() === highlight.toLowerCase() ? { backgroundColor: 'yellow' } : {}}>
+          {part}
+      </span>)} </span>;
   };
 
   return (
     <div>
       <input
         type="text"
-        value={query}
-        onChange={search}
         placeholder="Search..."
+        value={searchTerm}
+        onChange={handleSearch}
       />
-      <ul>
-        {results.map((item, index) => (
-          <li key={index}>
-            {Object.entries(item).map(([key, value]) => (
-              <p key={key}>
-                <strong>{key}:</strong> {highlightText(value.toString(), query)}
-              </p>
-            ))}
-          </li>
+      <div>
+        {results.map((list, index) => (
+          <div key={index}>
+            <h3>{list.title}</h3>
+            <ul>
+              {list.items && list.items.map((item, idx) => (
+                <li key={idx}>{getHighlightedText(item, searchTerm)}</li>
+              ))}
+            </ul>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

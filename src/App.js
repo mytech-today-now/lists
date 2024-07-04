@@ -1,10 +1,10 @@
 // src/App.js
 
 import React, { useState, useEffect } from 'react';
-import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer, toast } from 'react-toastify';
 import './App.css';
-import TodoList from './components/TodoList';
+import TodoList from './TodoList';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import SearchComponent from './components/SearchComponent'; // Import the SearchComponent
 
 function App() {

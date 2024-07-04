@@ -4,8 +4,8 @@ import React, { useState, useEffect } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 import './App.css';
-import TodoList from './TodoList';
-import SearchComponent from './SearchComponent'; // Import the SearchComponent
+import TodoList from './components/TodoList';
+import SearchComponent from './components/SearchComponent'; // Import the SearchComponent
 
 function App() {
   const [lists, setLists] = useState({});

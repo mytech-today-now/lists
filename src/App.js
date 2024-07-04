@@ -78,6 +78,31 @@ function App() {
       });
   };
 
+  const toggleComplete = (listName, taskIndex) => {
+    const encodedListName = encodeURIComponent(listName);
+    fetch(`http://localhost:3001/api/lists/${encodedListName}/tasks/${taskIndex}`, {
+      method: 'PUT',
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(() => {
+        setLists(prevLists => {
+          const newTasks = [...prevLists[listName]];
+          newTasks[taskIndex].completed = !newTasks[taskIndex].completed;
+          return { ...prevLists, [listName]: newTasks };
+        });
+        toast.success('Task updated successfully');
+      })
+      .catch(error => {
+        console.error('Fetch error:', error);
+        toast.error('Failed to update task');
+      });
+  };
+
   const deleteTask = (listName, taskIndex) => {
     const encodedListName = encodeURIComponent(listName);
     fetch(`http://localhost:3001/api/lists/${encodedListName}/tasks/${taskIndex}`, {

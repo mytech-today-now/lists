@@ -9,9 +9,7 @@
     "react-toastify": "^8.0.3"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.11.10",
-    "@testing-library/react": "^11.2.6",
-    "jest": "^26.6.3"
+    "@testing-library/react": "^11.2.6"
   },
   "scripts": {
     "start": "react-scripts start",
